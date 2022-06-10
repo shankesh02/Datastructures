@@ -1,0 +1,288 @@
+#include<iostream>
+#include<math.h>
+using namespace std;
+struct node
+{
+    int data;
+    struct node *lchild;
+    struct node *rchild;
+};
+class tree
+{
+    struct node *root;
+    struct node *ptr;
+    struct node *parent;
+public:
+    node* create(int ele);
+    void insert_ele(int ele,int nodedata,node *r);
+    void preorder(node *r);
+    void postorder(node *r);
+    void inorder(node *r);
+    void search_ele(node *r,int item);
+    int height_of_tree(node *r);
+    int mins(node *r);
+    int maxs(node *r);
+    void mirror(node *r);
+    void level_order(node *r);
+    void current_level(node *r,int level);
+};
+node* tree::create(int ele)
+{
+    struct node *n=new node;
+    n->data=ele;
+    n->lchild=n->rchild=NULL;
+    root=n;
+    return root;
+}
+void tree::insert_ele(int ele,int nodedata,node *r)
+{
+    char c;
+    struct node *n=new node;
+    n->data=ele;
+    n->rchild=n->lchild=NULL;
+    if(r!=NULL)
+    {
+        insert_ele(ele,nodedata,r->lchild);
+        if(r->data==nodedata)
+        {
+            cout<<"Enter the side to insert(l/r):";
+            cin>>c;
+            if(c=='l' && r->lchild==NULL)
+            {
+                r->lchild=n;
+            }
+            else if(c=='r' && r->rchild==NULL)
+            {
+                r->rchild=n;
+            }
+            else if(c=='r' && r->rchild!=NULL)
+            {
+                cout<<"There is a element in rchild"<<endl;
+            }
+            else if(c=='l' && r->lchild!=NULL)
+            {
+                cout<<"There is a element in lchild"<<endl;
+            }
+            else
+            {
+                cout<<"Invalid Choice"<<endl;
+            }
+        }
+        insert_ele(ele,nodedata,r->rchild);
+    }
+}
+void tree::preorder(node *r)
+{
+    if(r!=NULL)
+    {
+        preorder(r->lchild);
+        postorder(r->rchild);
+        cout<<r->data<<"\t";
+    }
+}
+void tree::postorder(node *r)
+{
+    if(r!=NULL)
+    {
+        cout<<r->data<<"\t";
+        postorder(r->lchild);
+        postorder(r->rchild);
+    }
+}
+void tree::inorder(node *r)
+{
+    if(r!=NULL)
+    {
+        inorder(r->lchild);
+        cout<<r->data<<"\t";
+        inorder(r->rchild);
+    }
+}
+void tree::search_ele(node *r,int item)
+{
+    int f=0;
+    if(r!=NULL && f==0)
+    {
+        search_ele(r->lchild,item);
+        search_ele(r->rchild,item);
+        if(r->data==item)
+        {
+            f=1;
+            cout<<"Element Found"<<endl;
+        }
+        else
+        {
+            f=0;
+            //cout<<"Element Not Found"<<endl;
+        }
+    }
+
+}
+int tree::height_of_tree(node *r)
+{
+    static int counts=0;
+    int height=0;
+    if(r!=NULL)
+    {
+        height_of_tree(r->lchild);
+        height_of_tree(r->rchild);
+        counts=counts+1;
+        //cout<<counts<<endl;
+        height=log2(counts);
+    }
+    return ceil(height+1);
+}
+int tree::mins(node *r)
+{
+    static int mind=root->data;
+    if(r!=NULL)
+    {
+        mins(r->lchild);
+        mins(r->rchild);
+        cout<<r->data<<"\t";
+        if(r->data<mind)
+        {
+            mind=r->data;
+        }
+    }
+    return mind;
+}
+int tree::maxs(node *r)
+{
+    static int maxd=root->data;
+    if(r!=NULL)
+    {
+        maxs(r->lchild);
+        maxs(r->rchild);
+        if(r->data>=maxd)
+        {
+            maxd=r->data;
+        }
+    }
+    return maxd;
+}
+void tree::mirror(struct node *r)
+{
+    if(r!=NULL)
+    {
+        mirror(r->lchild);
+        struct node *temp;
+        temp=r->lchild;
+        r->lchild=r->rchild;
+        r->rchild=temp;
+        mirror(r->rchild);
+    }
+}
+void tree::current_level(node *r,int level)
+{
+    if(r!=NULL)
+    {
+        if(level==1)
+        {
+            cout<<r->data<<"\t";
+        }
+        else if(level>1)
+        {
+            current_level(r->lchild,level-1);
+            current_level(r->rchild,level-1);
+        }
+    }
+}
+void tree::level_order(node *r)
+{
+    int h,i;
+    h=height_of_tree(r);
+    for(i=1;i<=h;i++)
+    {
+        current_level(r,i);
+    }
+}
+int main()
+{
+    char ch='Y';
+    int c,ele,nd,f,h,mind,maxd;
+    struct node *r;
+    tree t1;
+    cout<<"Enter the root of the binary tree:";
+    cin>>ele;
+    r=t1.create(ele);
+    while(ch=='y' || ch=='Y')
+    {
+        cout<<"1.Insert an element"<<endl;
+        cout<<"2.Display in Preorder"<<endl;
+        cout<<"3.Display in Postorder"<<endl;
+        cout<<"4.Display in Inorder"<<endl;
+        cout<<"5.Search Element"<<endl;
+        cout<<"6.Hight of the binary tree"<<endl;
+        cout<<"7.Minimum and Maximum in binary tree"<<endl;
+        cout<<"8.Mirror the binary tree"<<endl;
+        cout<<"9.Level Order"<<endl;
+        cout<<"Enter the choice:";
+        cin>>c;
+        if(c==1)
+        {
+            cout<<"Enter the parent node data:";
+            cin>>nd;
+            cout<<"Enter the element:";
+            cin>>ele;
+            t1.insert_ele(ele,nd,r);
+        }
+        else if(c==2)
+        {
+            cout<<"Preorder:";
+            t1.preorder(r);
+            cout<<endl;
+        }
+        else if(c==3)
+        {
+            cout<<"Postorder:";
+            t1.postorder(r);
+            cout<<endl;
+        }
+        else if(c==4)
+        {
+            cout<<"Inorder:";
+            t1.inorder(r);
+            cout<<endl;
+        }
+        else if(c==5)
+        {
+            cout<<"Enter the element to search:";
+            cin>>ele;
+            t1.search_ele(r,ele);
+            /*if(f==1)
+            {
+                cout<<"Element Found"<<endl;
+            }
+            else if(f==0)
+            {
+                cout<<"Element Not Found"<<endl;
+            }*/
+        }
+        else if(c==6)
+        {
+            h=t1.height_of_tree(r);
+            cout<<"Height:"<<h<<endl;
+        }
+        else if(c==7)
+        {
+            mind=t1.mins(r);
+            maxd=t1.maxs(r);
+            cout<<"Minimum:"<<mind<<endl<<"Maximum:"<<maxd<<endl;
+        }
+        else if(c==8)
+        {
+            t1.mirror(r);
+        }
+        else if(c==9)
+        {
+            t1.level_order(r);
+        }
+        else
+        {
+            cout<<"Invalid Choice"<<endl;
+        }
+        cout<<"Do you want to continue:";
+        cin>>ch;
+    }
+}
