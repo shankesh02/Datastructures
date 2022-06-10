@@ -1,0 +1,37 @@
+void tree::insert_ele(int ele,int nodedata,node *r)
+{
+    char c;
+    struct node *n=new node;
+    n->data=ele;
+    n->rchild=n->lchild=NULL;
+    if(r!=NULL)
+    {
+        insert_ele(ele,nodedata,r->lchild);
+        if(r->data==nodedata)
+        {
+            cout<<"Enter the side to insert(l/r):";
+            cin>>c;
+            if(c=='l' && r->lchild==NULL)
+            {
+                r->lchild=n;
+            }
+            else if(c=='r' && r->rchild==NULL)
+            {
+                r->rchild=n;
+            }
+            else if(c=='r' && r->rchild!=NULL)
+            {
+                cout<<"There is a element in rchild"<<endl;
+            }
+            else if(c=='l' && r->lchild!=NULL)
+            {
+                cout<<"There is a element in lchild"<<endl;
+            }
+            else
+            {
+                cout<<"Invalid Choice"<<endl;
+            }
+        }
+        insert_ele(ele,nodedata,r->rchild);
+    }
+}
